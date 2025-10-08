@@ -1,10 +1,39 @@
 import React, { useState, useCallback } from 'react';
-import { Trash2, PlusCircle, Save } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Trash2, 
+  PlusCircle, 
+  Save, 
+  Sparkles, 
+  User, 
+  MapPin, 
+  Briefcase, 
+  GraduationCap, 
+  Code, 
+  Award, 
+  Target,
+  ChevronRight,
+  ChevronLeft,
+  CheckCircle,
+  Circle
+} from 'lucide-react';
 import api from '../api/api';
 
 // --- Configuration and Constants ---
 // NOTE: In a real MERN project, this API URL would likely be an environment variable.
-const API_BASE_URL = "http://localhost:5000/api/profiles"; 
+const API_BASE_URL = "http://localhost:5000/api/profiles";
+
+// Step configuration for the wizard
+const STEPS = [
+  { id: 'basic', title: 'Basic Info', icon: User, description: 'Personal details and contact information' },
+  { id: 'location', title: 'Location & Skills', icon: MapPin, description: 'Address and professional skills' },
+  { id: 'experience', title: 'Experience', icon: Briefcase, description: 'Work experience and career history' },
+  { id: 'education', title: 'Education', icon: GraduationCap, description: 'Educational background and qualifications' },
+  { id: 'projects', title: 'Projects', icon: Code, description: 'Portfolio projects and achievements' },
+  { id: 'certifications', title: 'Certifications', icon: Award, description: 'Professional certifications and licenses' },
+  { id: 'preferences', title: 'Job Preferences', icon: Target, description: 'Career preferences and expectations' },
+  { id: 'review', title: 'Review', icon: CheckCircle, description: 'Review and submit your profile' }
+]; 
 
 // --- Initial State Structures matching Mongoose Sub-Schemas ---
 
@@ -78,267 +107,357 @@ const initialFormState = {
 // --- Reusable Component for Array Items (Experience) ---
 
 const ExperienceFormItem = ({ experience, index, handleChange, handleRemove }) => (
-  <div className="p-4 mb-4 border border-gray-200 bg-white rounded-lg shadow-sm">
-    <h4 className="text-lg font-semibold text-indigo-700 mb-3">Experience #{index + 1}</h4>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <input
-        type="text"
-        placeholder="Company"
-        value={experience.company}
-        onChange={(e) => handleChange(index, 'company', e.target.value)}
-        required
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <input
-        type="text"
-        placeholder="Role"
-        value={experience.role}
-        onChange={(e) => handleChange(index, 'role', e.target.value)}
-        required
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <input
-        type="date"
-        placeholder="Start Date"
-        value={experience.startDate}
-        onChange={(e) => handleChange(index, 'startDate', e.target.value)}
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <input
-        type="date"
-        placeholder="End Date"
-        value={experience.endDate}
-        onChange={(e) => handleChange(index, 'endDate', e.target.value)}
-        disabled={experience.isCurrent}
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100"
-      />
-      <div className="col-span-1 md:col-span-2">
-        <textarea
-          placeholder="Description"
-          value={experience.description}
-          onChange={(e) => handleChange(index, 'description', e.target.value)}
-          rows="3"
-          className="w-full p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-        />
-      </div>
-    </div>
-    <div className="flex justify-between items-center mt-3">
-      <label className="flex items-center text-sm text-gray-700">
-        <input
-          type="checkbox"
-          checked={experience.isCurrent}
-          onChange={(e) => handleChange(index, 'isCurrent', e.target.checked)}
-          className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-        />
-        <span className="ml-2">Currently work here</span>
-      </label>
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    className="p-6 mb-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50"
+  >
+    <div className="flex items-center justify-between mb-4">
+      <h4 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+        <Briefcase className="w-5 h-5 text-blue-600" />
+        Experience #{index + 1}
+      </h4>
       <button
         type="button"
         onClick={() => handleRemove(index)}
-        className="text-red-500 hover:text-red-700 p-2 rounded-full transition duration-150"
+        className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-all duration-200"
         aria-label="Remove Experience"
       >
         <Trash2 className="w-5 h-5" />
       </button>
     </div>
-  </div>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Company</label>
+        <input
+          type="text"
+          placeholder="Enter company name"
+          value={experience.company}
+          onChange={(e) => handleChange(index, 'company', e.target.value)}
+          required
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Role/Position</label>
+        <input
+          type="text"
+          placeholder="Enter your role"
+          value={experience.role}
+          onChange={(e) => handleChange(index, 'role', e.target.value)}
+          required
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Start Date</label>
+        <input
+          type="date"
+          value={experience.startDate}
+          onChange={(e) => handleChange(index, 'startDate', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">End Date</label>
+        <input
+          type="date"
+          value={experience.endDate}
+          onChange={(e) => handleChange(index, 'endDate', e.target.value)}
+          disabled={experience.isCurrent}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 disabled:bg-gray-100 disabled:text-gray-500"
+        />
+      </div>
+      <div className="col-span-1 md:col-span-2 space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Description</label>
+        <textarea
+          placeholder="Describe your responsibilities and achievements"
+          value={experience.description}
+          onChange={(e) => handleChange(index, 'description', e.target.value)}
+          rows="3"
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none"
+        />
+      </div>
+    </div>
+    
+    <div className="flex justify-between items-center mt-4">
+      <label className="flex items-center text-sm text-gray-700 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={experience.isCurrent}
+          onChange={(e) => handleChange(index, 'isCurrent', e.target.checked)}
+          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+        />
+        <span className="ml-2">Currently work here</span>
+      </label>
+    </div>
+  </motion.div>
 );
 
 // --- Reusable Component for Array Items (Education) ---
 
 const EducationFormItem = ({ education, index, handleChange, handleRemove }) => (
-  <div className="p-4 mb-4 border border-gray-200 bg-white rounded-lg shadow-sm">
-    <h4 className="text-lg font-semibold text-indigo-700 mb-3">Education #{index + 1}</h4>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <input
-        type="text"
-        placeholder="School Name"
-        value={education.school}
-        onChange={(e) => handleChange(index, 'school', e.target.value)}
-        required
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <input
-        type="text"
-        placeholder="Degree/Qualification"
-        value={education.degree}
-        onChange={(e) => handleChange(index, 'degree', e.target.value)}
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <input
-        type="text"
-        placeholder="Field of Study"
-        value={education.fieldOfStudy}
-        onChange={(e) => handleChange(index, 'fieldOfStudy', e.target.value)}
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <input
-        type="text"
-        placeholder="Grade (e.g., 3.8 GPA)"
-        value={education.grade}
-        onChange={(e) => handleChange(index, 'grade', e.target.value)}
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <div className="flex space-x-2">
-        <input
-          type="date"
-          placeholder="Start Date"
-          value={education.startDate}
-          onChange={(e) => handleChange(index, 'startDate', e.target.value)}
-          className="flex-1 p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-        />
-        <input
-          type="date"
-          placeholder="End Date"
-          value={education.endDate}
-          onChange={(e) => handleChange(index, 'endDate', e.target.value)}
-          className="flex-1 p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-        />
-      </div>
-    </div>
-    <div className="flex justify-end mt-3">
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    className="p-6 mb-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50"
+  >
+    <div className="flex items-center justify-between mb-4">
+      <h4 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+        <GraduationCap className="w-5 h-5 text-blue-600" />
+        Education #{index + 1}
+      </h4>
       <button
         type="button"
         onClick={() => handleRemove(index)}
-        className="text-red-500 hover:text-red-700 p-2 rounded-full transition duration-150"
+        className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-all duration-200"
         aria-label="Remove Education"
       >
         <Trash2 className="w-5 h-5" />
       </button>
     </div>
-  </div>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">School/Institution</label>
+        <input
+          type="text"
+          placeholder="Enter school name"
+          value={education.school}
+          onChange={(e) => handleChange(index, 'school', e.target.value)}
+          required
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Degree/Qualification</label>
+        <input
+          type="text"
+          placeholder="e.g., Bachelor's, Master's, PhD"
+          value={education.degree}
+          onChange={(e) => handleChange(index, 'degree', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Field of Study</label>
+        <input
+          type="text"
+          placeholder="e.g., Computer Science, Business"
+          value={education.fieldOfStudy}
+          onChange={(e) => handleChange(index, 'fieldOfStudy', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Grade/GPA</label>
+        <input
+          type="text"
+          placeholder="e.g., 3.8 GPA, First Class"
+          value={education.grade}
+          onChange={(e) => handleChange(index, 'grade', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Start Date</label>
+        <input
+          type="date"
+          value={education.startDate}
+          onChange={(e) => handleChange(index, 'startDate', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">End Date</label>
+        <input
+          type="date"
+          value={education.endDate}
+          onChange={(e) => handleChange(index, 'endDate', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900"
+        />
+      </div>
+    </div>
+  </motion.div>
 );
 
 // --- Reusable Component for Array Items (Projects) ---
 
 const ProjectFormItem = ({ project, index, handleChange, handleRemove }) => (
-  <div className="p-4 mb-4 border border-gray-200 bg-white rounded-lg shadow-sm">
-    <h4 className="text-lg font-semibold text-indigo-700 mb-3">Project #{index + 1}</h4>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <input
-        type="text"
-        placeholder="Project Title"
-        value={project.title}
-        onChange={(e) => handleChange(index, 'title', e.target.value)}
-        required
-        className="col-span-1 p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <input
-        type="text"
-        placeholder="Technologies (comma separated: React, Node, Mongo)"
-        value={project.technologies}
-        onChange={(e) => handleChange(index, 'technologies', e.target.value)}
-        className="col-span-1 p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <input
-        type="url"
-        placeholder="Project Link (URL)"
-        value={project.link}
-        onChange={(e) => handleChange(index, 'link', e.target.value)}
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <div className="flex space-x-2">
-        <input
-          type="date"
-          placeholder="Start Date"
-          value={project.startDate}
-          onChange={(e) => handleChange(index, 'startDate', e.target.value)}
-          className="flex-1 p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-        />
-        <input
-          type="date"
-          placeholder="End Date"
-          value={project.endDate}
-          onChange={(e) => handleChange(index, 'endDate', e.target.value)}
-          className="flex-1 p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-        />
-      </div>
-      <div className="col-span-1 md:col-span-2">
-        <textarea
-          placeholder="Description"
-          value={project.description}
-          onChange={(e) => handleChange(index, 'description', e.target.value)}
-          rows="3"
-          className="w-full p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-        />
-      </div>
-    </div>
-    <div className="flex justify-end mt-3">
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    className="p-6 mb-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50"
+  >
+    <div className="flex items-center justify-between mb-4">
+      <h4 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+        <Code className="w-5 h-5 text-blue-600" />
+        Project #{index + 1}
+      </h4>
       <button
         type="button"
         onClick={() => handleRemove(index)}
-        className="text-red-500 hover:text-red-700 p-2 rounded-full transition duration-150"
+        className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-all duration-200"
         aria-label="Remove Project"
       >
         <Trash2 className="w-5 h-5" />
       </button>
     </div>
-  </div>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Project Title</label>
+        <input
+          type="text"
+          placeholder="Enter project title"
+          value={project.title}
+          onChange={(e) => handleChange(index, 'title', e.target.value)}
+          required
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Technologies</label>
+        <input
+          type="text"
+          placeholder="React, Node.js, MongoDB (comma separated)"
+          value={project.technologies}
+          onChange={(e) => handleChange(index, 'technologies', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Project Link</label>
+        <input
+          type="url"
+          placeholder="https://your-project.com"
+          value={project.link}
+          onChange={(e) => handleChange(index, 'link', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Start Date</label>
+        <input
+          type="date"
+          value={project.startDate}
+          onChange={(e) => handleChange(index, 'startDate', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">End Date</label>
+        <input
+          type="date"
+          value={project.endDate}
+          onChange={(e) => handleChange(index, 'endDate', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900"
+        />
+      </div>
+      <div className="col-span-1 md:col-span-2 space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Description</label>
+        <textarea
+          placeholder="Describe your project, key features, and your role"
+          value={project.description}
+          onChange={(e) => handleChange(index, 'description', e.target.value)}
+          rows="3"
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none"
+        />
+      </div>
+    </div>
+  </motion.div>
 );
 
 // --- Reusable Component for Array Items (Certifications) ---
 
 const CertificationFormItem = ({ certification, index, handleChange, handleRemove }) => (
-  <div className="p-4 mb-4 border border-gray-200 bg-white rounded-lg shadow-sm">
-    <h4 className="text-lg font-semibold text-indigo-700 mb-3">Certification #{index + 1}</h4>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <input
-        type="text"
-        placeholder="Certification Name"
-        value={certification.name}
-        onChange={(e) => handleChange(index, 'name', e.target.value)}
-        required
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <input
-        type="text"
-        placeholder="Issuing Organization (Issuer)"
-        value={certification.issuer}
-        onChange={(e) => handleChange(index, 'issuer', e.target.value)}
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <input
-        type="text"
-        placeholder="Credential ID"
-        value={certification.credentialId}
-        onChange={(e) => handleChange(index, 'credentialId', e.target.value)}
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <input
-        type="url"
-        placeholder="Credential URL"
-        value={certification.credentialUrl}
-        onChange={(e) => handleChange(index, 'credentialUrl', e.target.value)}
-        className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-      />
-      <div className="flex space-x-2">
-        <input
-          type="date"
-          placeholder="Issue Date"
-          value={certification.issueDate}
-          onChange={(e) => handleChange(index, 'issueDate', e.target.value)}
-          className="flex-1 p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-        />
-        <input
-          type="date"
-          placeholder="Expiry Date (Optional)"
-          value={certification.expiryDate}
-          onChange={(e) => handleChange(index, 'expiryDate', e.target.value)}
-          className="flex-1 p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-        />
-      </div>
-    </div>
-    <div className="flex justify-end mt-3">
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    className="p-6 mb-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50"
+  >
+    <div className="flex items-center justify-between mb-4">
+      <h4 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+        <Award className="w-5 h-5 text-blue-600" />
+        Certification #{index + 1}
+      </h4>
       <button
         type="button"
         onClick={() => handleRemove(index)}
-        className="text-red-500 hover:text-red-700 p-2 rounded-full transition duration-150"
+        className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-all duration-200"
         aria-label="Remove Certification"
       >
         <Trash2 className="w-5 h-5" />
       </button>
     </div>
-  </div>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Certification Name</label>
+        <input
+          type="text"
+          placeholder="e.g., AWS Certified Solutions Architect"
+          value={certification.name}
+          onChange={(e) => handleChange(index, 'name', e.target.value)}
+          required
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Issuing Organization</label>
+        <input
+          type="text"
+          placeholder="e.g., Amazon Web Services, Microsoft"
+          value={certification.issuer}
+          onChange={(e) => handleChange(index, 'issuer', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Credential ID</label>
+        <input
+          type="text"
+          placeholder="Your credential ID or certificate number"
+          value={certification.credentialId}
+          onChange={(e) => handleChange(index, 'credentialId', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Credential URL</label>
+        <input
+          type="url"
+          placeholder="https://verify.credential.com/your-id"
+          value={certification.credentialUrl}
+          onChange={(e) => handleChange(index, 'credentialUrl', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Issue Date</label>
+        <input
+          type="date"
+          value={certification.issueDate}
+          onChange={(e) => handleChange(index, 'issueDate', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-gray-700">Expiry Date (Optional)</label>
+        <input
+          type="date"
+          value={certification.expiryDate}
+          onChange={(e) => handleChange(index, 'expiryDate', e.target.value)}
+          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900"
+        />
+      </div>
+    </div>
+  </motion.div>
 );
 
 
@@ -348,6 +467,29 @@ const CreateProfile = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState(new Set());
+
+  // Step navigation functions
+  const nextStep = () => {
+    if (currentStep < STEPS.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const goToStep = (stepIndex) => {
+    setCurrentStep(stepIndex);
+  };
+
+  const markStepComplete = (stepIndex) => {
+    setCompletedSteps(prev => new Set([...prev, stepIndex]));
+  };
 
   // General handler for top-level and nested 'details' fields (non-array/non-object)
   const handleInputChange = useCallback((e) => {
@@ -527,274 +669,540 @@ const CreateProfile = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
-      <script src="https://cdn.tailwindcss.com"></script>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .form-section {
-          @apply p-6 bg-white rounded-xl shadow-lg mb-8 border-t-4 border-indigo-600;
-        }
-        .input-label {
-          @apply block text-sm font-medium text-gray-700 mb-1;
-        }
-      `}</style>
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-2">Create Your Profile</h1>
-        <p className="text-lg text-gray-500 mb-8">
-          Fill out the details to create a comprehensive professional profile.
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-400/10 to-purple-400/10 rounded-full blur-3xl"></div>
+      </div>
 
-        {/* Message Box */}
-        {message && (
-          <div className={`p-4 mb-6 rounded-lg ${isSuccess ? 'bg-green-100 text-green-700 border border-green-300' : 'bg-red-100 text-red-700 border border-red-300'}`}>
-            {message}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          {/* --- Section 1: Basic Profile Info --- */}
-          <div className="form-section">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Basic Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="profileName" className="input-label">Profile Name (e.g., 'Primary Resume') *</label>
-                <input
-                  type="text"
-                  id="profileName"
-                  name="profileName"
-                  value={formData.profileName}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                />
+      <div className="relative z-10 min-h-screen flex">
+        {/* Sidebar - Step Navigation */}
+        <div className="w-80 bg-white/80 backdrop-blur-sm border-r border-white/50 p-6">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="mb-8"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Sparkles className="w-6 h-6 text-white" />
               </div>
-              <div>
-                <label htmlFor="fullName" className="input-label">Full Name *</label>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  value={formData.details.fullName}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="input-label">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.details.email}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
-              <div>
-                <label htmlFor="phone" className="input-label">Phone</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.details.phone}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label htmlFor="resumeUrl" className="input-label">External Resume URL</label>
-                <input
-                  type="url"
-                  id="resumeUrl"
-                  name="resumeUrl"
-                  value={formData.resumeUrl}
-                  onChange={handleInputChange}
-                  placeholder="e.g., A link to your hosted PDF resume"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                ProskAI
+              </h1>
             </div>
-          </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Create Your Profile</h2>
+            <p className="text-gray-600 text-sm">Build your professional profile step by step</p>
+          </motion.div>
 
-          {/* --- Section 2: Address and Skills --- */}
-          <div className="form-section">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Location & Skills</h2>
-
-            <fieldset className="p-4 border border-gray-200 rounded-lg mb-6">
-              <legend className="px-2 text-lg font-medium text-gray-700">Address</legend>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" name="street" value={formData.details.address.street} onChange={handleAddressChange} placeholder="Street" className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
-                <input type="text" name="city" value={formData.details.address.city} onChange={handleAddressChange} placeholder="City" className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
-                <input type="text" name="state" value={formData.details.address.state} onChange={handleAddressChange} placeholder="State/Province" className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
-                <input type="text" name="country" value={formData.details.address.country} onChange={handleAddressChange} placeholder="Country" className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
-                <input type="text" name="zipCode" value={formData.details.address.zipCode} onChange={handleAddressChange} placeholder="Zip Code" className="p-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500" />
-              </div>
-            </fieldset>
-
-            <div>
-              <label htmlFor="skills" className="input-label">Skills</label>
-              <textarea
-                id="skills"
-                name="skills"
-                rows="2"
-                value={formData.details.skills}
-                onChange={handleInputChange}
-                placeholder="List your key skills, separated by commas (e.g., React, Node.js, MongoDB, Tailwind CSS)"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-          </div>
-
-          {/* --- Section 3: Experience --- */}
-          <div className="form-section">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">3. Professional Experience</h2>
-            {formData.details.experience.map((exp, index) => (
-              <ExperienceFormItem
-                key={index}
-                experience={exp}
-                index={index}
-                handleChange={(i, field, value) => handleArrayChange('experience', i, field, value)}
-                handleRemove={() => handleRemoveItem('experience', index)}
-              />
-            ))}
-            <button
-              type="button"
-              onClick={() => handleAddItem('experience', initialExperience)}
-              className="mt-4 flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition duration-150"
-            >
-              <PlusCircle className="w-5 h-5 mr-2" />
-              Add Experience
-            </button>
-          </div>
-
-          {/* --- Section 4: Education --- */}
-          <div className="form-section">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">4. Education</h2>
-            {formData.details.education.map((edu, index) => (
-              <EducationFormItem
-                key={index}
-                education={edu}
-                index={index}
-                handleChange={(i, field, value) => handleArrayChange('education', i, field, value)}
-                handleRemove={() => handleRemoveItem('education', index)}
-              />
-            ))}
-            <button
-              type="button"
-              onClick={() => handleAddItem('education', initialEducation)}
-              className="mt-4 flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition duration-150"
-            >
-              <PlusCircle className="w-5 h-5 mr-2" />
-              Add Education
-            </button>
-          </div>
-
-          {/* --- Section 5: Projects --- */}
-          <div className="form-section">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">5. Projects</h2>
-            {formData.details.projects.map((proj, index) => (
-              <ProjectFormItem
-                key={index}
-                project={proj}
-                index={index}
-                handleChange={(i, field, value) => handleArrayChange('projects', i, field, value)}
-                handleRemove={() => handleRemoveItem('projects', index)}
-              />
-            ))}
-            <button
-              type="button"
-              onClick={() => handleAddItem('projects', initialProject)}
-              className="mt-4 flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition duration-150"
-            >
-              <PlusCircle className="w-5 h-5 mr-2" />
-              Add Project
-            </button>
-          </div>
-
-          {/* --- Section 6: Certifications --- */}
-          <div className="form-section">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">6. Certifications</h2>
-            {formData.details.certifications.map((cert, index) => (
-              <CertificationFormItem
-                key={index}
-                certification={cert}
-                index={index}
-                handleChange={(i, field, value) => handleArrayChange('certifications', i, field, value)}
-                handleRemove={() => handleRemoveItem('certifications', index)}
-              />
-            ))}
-            <button
-              type="button"
-              onClick={() => handleAddItem('certifications', initialCertification)}
-              className="mt-4 flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition duration-150"
-            >
-              <PlusCircle className="w-5 h-5 mr-2" />
-              Add Certification
-            </button>
-          </div>
-
-          {/* --- Section 7: Job Preferences --- */}
-          <div className="form-section">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">7. Job Preferences (Optional)</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label htmlFor="jobType" className="input-label">Preferred Job Type</label>
-                <select
-                  id="jobType"
-                  name="jobType"
-                  value={formData.details.jobPreferences.jobType}
-                  onChange={handleJobPreferenceChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+          {/* Step Progress */}
+          <div className="space-y-4">
+            {STEPS.map((step, index) => {
+              const isActive = currentStep === index;
+              const isCompleted = completedSteps.has(index);
+              const Icon = step.icon;
+              
+              return (
+                <motion.div
+                  key={step.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  onClick={() => goToStep(index)}
+                  className={`p-4 rounded-2xl cursor-pointer transition-all duration-300 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
+                      : isCompleted
+                      ? 'bg-green-50 border border-green-200 text-green-700 hover:bg-green-100'
+                      : 'bg-white/50 border border-gray-200 text-gray-600 hover:bg-white/80'
+                  }`}
                 >
-                  <option value="remote">Remote</option>
-                  <option value="onsite">Onsite</option>
-                  <option value="hybrid">Hybrid</option>
-                </select>
-              </div>
-              <div className="md:col-span-2">
-                <label htmlFor="preferredLocations" className="input-label">Preferred Locations</label>
-                <input
-                  type="text"
-                  id="preferredLocations"
-                  name="preferredLocations"
-                  value={formData.details.jobPreferences.preferredLocations}
-                  onChange={handleJobPreferenceChange}
-                  placeholder="Cities or Regions, separated by commas"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
-              <div>
-                <label htmlFor="expectedSalary" className="input-label">Expected Salary (e.g., '120k USD')</label>
-                <input
-                  type="text"
-                  id="expectedSalary"
-                  name="expectedSalary"
-                  value={formData.details.jobPreferences.expectedSalary}
-                  onChange={handleJobPreferenceChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
-            </div>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      isActive
+                        ? 'bg-white/20'
+                        : isCompleted
+                        ? 'bg-green-500 text-white'
+                        : 'bg-gray-200'
+                    }`}>
+                      {isCompleted ? (
+                        <CheckCircle className="w-5 h-5" />
+                      ) : (
+                        <Icon className="w-5 h-5" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-sm">{step.title}</h3>
+                      <p className="text-xs opacity-75">{step.description}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
+        </div>
 
-          {/* --- Submission Button --- */}
-          <div className="mt-8 pt-4 border-t border-gray-200">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition duration-150"
+        {/* Main Content Area */}
+        <div className="flex-1 p-8">
+          <div className="max-w-4xl mx-auto">
+            {/* Header */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8"
             >
-              {loading ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-              ) : (
-                <Save className="w-5 h-5 mr-2" />
-              )}
-              {loading ? 'Saving Profile...' : 'Save Complete Profile'}
-            </button>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-2">
+                    {STEPS[currentStep].title}
+                  </h3>
+                  <p className="text-gray-600">{STEPS[currentStep].description}</p>
+                </div>
+                <div className="text-sm text-gray-500">
+                  Step {currentStep + 1} of {STEPS.length}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Message Box */}
+            {message && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`p-4 mb-6 rounded-2xl ${
+                  isSuccess 
+                    ? 'bg-green-50 border border-green-200 text-green-700' 
+                    : 'bg-red-50 border border-red-200 text-red-700'
+                }`}
+              >
+                {message}
+              </motion.div>
+            )}
+
+            {/* Form Content */}
+            <motion.div
+              key={currentStep}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/50 p-8"
+            >
+              <form onSubmit={handleSubmit}>
+                <AnimatePresence mode="wait">
+                  {currentStep === 0 && (
+                    <motion.div
+                      key="basic"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="space-y-6"
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-sm font-semibold text-gray-700">Profile Name *</label>
+                          <input
+                            type="text"
+                            name="profileName"
+                            value={formData.profileName}
+                            onChange={handleInputChange}
+                            placeholder="e.g., Primary Resume"
+                            required
+                            className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-semibold text-gray-700">Full Name *</label>
+                          <input
+                            type="text"
+                            name="fullName"
+                            value={formData.details.fullName}
+                            onChange={handleInputChange}
+                            placeholder="Enter your full name"
+                            required
+                            className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-semibold text-gray-700">Email</label>
+                          <input
+                            type="email"
+                            name="email"
+                            value={formData.details.email}
+                            onChange={handleInputChange}
+                            placeholder="your.email@example.com"
+                            className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-semibold text-gray-700">Phone</label>
+                          <input
+                            type="tel"
+                            name="phone"
+                            value={formData.details.phone}
+                            onChange={handleInputChange}
+                            placeholder="+1 (555) 123-4567"
+                            className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                          />
+                        </div>
+                        <div className="md:col-span-2 space-y-2">
+                          <label className="text-sm font-semibold text-gray-700">Resume URL</label>
+                          <input
+                            type="url"
+                            name="resumeUrl"
+                            value={formData.resumeUrl}
+                            onChange={handleInputChange}
+                            placeholder="https://your-resume.pdf"
+                            className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {currentStep === 1 && (
+                    <motion.div
+                      key="location"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="space-y-6"
+                    >
+                      <div className="space-y-4">
+                        <h4 className="text-lg font-semibold text-gray-900">Address Information</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <input
+                            type="text"
+                            name="street"
+                            value={formData.details.address.street}
+                            onChange={handleAddressChange}
+                            placeholder="Street Address"
+                            className="p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                          />
+                          <input
+                            type="text"
+                            name="city"
+                            value={formData.details.address.city}
+                            onChange={handleAddressChange}
+                            placeholder="City"
+                            className="p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                          />
+                          <input
+                            type="text"
+                            name="state"
+                            value={formData.details.address.state}
+                            onChange={handleAddressChange}
+                            placeholder="State/Province"
+                            className="p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                          />
+                          <input
+                            type="text"
+                            name="country"
+                            value={formData.details.address.country}
+                            onChange={handleAddressChange}
+                            placeholder="Country"
+                            className="p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                          />
+                          <input
+                            type="text"
+                            name="zipCode"
+                            value={formData.details.address.zipCode}
+                            onChange={handleAddressChange}
+                            placeholder="ZIP/Postal Code"
+                            className="p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <label className="text-sm font-semibold text-gray-700">Skills</label>
+                        <textarea
+                          name="skills"
+                          rows="3"
+                          value={formData.details.skills}
+                          onChange={handleInputChange}
+                          placeholder="List your key skills, separated by commas (e.g., React, Node.js, MongoDB, Python)"
+                          className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500 resize-none"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {currentStep === 2 && (
+                    <motion.div
+                      key="experience"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="space-y-6"
+                    >
+                      {formData.details.experience.map((exp, index) => (
+                        <ExperienceFormItem
+                          key={index}
+                          experience={exp}
+                          index={index}
+                          handleChange={(i, field, value) => handleArrayChange('experience', i, field, value)}
+                          handleRemove={() => handleRemoveItem('experience', index)}
+                        />
+                      ))}
+                      <motion.button
+                        type="button"
+                        onClick={() => handleAddItem('experience', initialExperience)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full p-4 border-2 border-dashed border-blue-300 rounded-2xl text-blue-600 hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 flex items-center justify-center gap-2"
+                      >
+                        <PlusCircle className="w-5 h-5" />
+                        Add Experience
+                      </motion.button>
+                    </motion.div>
+                  )}
+
+                  {currentStep === 3 && (
+                    <motion.div
+                      key="education"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="space-y-6"
+                    >
+                      {formData.details.education.map((edu, index) => (
+                        <EducationFormItem
+                          key={index}
+                          education={edu}
+                          index={index}
+                          handleChange={(i, field, value) => handleArrayChange('education', i, field, value)}
+                          handleRemove={() => handleRemoveItem('education', index)}
+                        />
+                      ))}
+                      <motion.button
+                        type="button"
+                        onClick={() => handleAddItem('education', initialEducation)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full p-4 border-2 border-dashed border-blue-300 rounded-2xl text-blue-600 hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 flex items-center justify-center gap-2"
+                      >
+                        <PlusCircle className="w-5 h-5" />
+                        Add Education
+                      </motion.button>
+                    </motion.div>
+                  )}
+
+                  {currentStep === 4 && (
+                    <motion.div
+                      key="projects"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="space-y-6"
+                    >
+                      {formData.details.projects.map((proj, index) => (
+                        <ProjectFormItem
+                          key={index}
+                          project={proj}
+                          index={index}
+                          handleChange={(i, field, value) => handleArrayChange('projects', i, field, value)}
+                          handleRemove={() => handleRemoveItem('projects', index)}
+                        />
+                      ))}
+                      <motion.button
+                        type="button"
+                        onClick={() => handleAddItem('projects', initialProject)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full p-4 border-2 border-dashed border-blue-300 rounded-2xl text-blue-600 hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 flex items-center justify-center gap-2"
+                      >
+                        <PlusCircle className="w-5 h-5" />
+                        Add Project
+                      </motion.button>
+                    </motion.div>
+                  )}
+
+                  {currentStep === 5 && (
+                    <motion.div
+                      key="certifications"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="space-y-6"
+                    >
+                      {formData.details.certifications.map((cert, index) => (
+                        <CertificationFormItem
+                          key={index}
+                          certification={cert}
+                          index={index}
+                          handleChange={(i, field, value) => handleArrayChange('certifications', i, field, value)}
+                          handleRemove={() => handleRemoveItem('certifications', index)}
+                        />
+                      ))}
+                      <motion.button
+                        type="button"
+                        onClick={() => handleAddItem('certifications', initialCertification)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full p-4 border-2 border-dashed border-blue-300 rounded-2xl text-blue-600 hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 flex items-center justify-center gap-2"
+                      >
+                        <PlusCircle className="w-5 h-5" />
+                        Add Certification
+                      </motion.button>
+                    </motion.div>
+                  )}
+
+                  {currentStep === 6 && (
+                    <motion.div
+                      key="preferences"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="space-y-6"
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-sm font-semibold text-gray-700">Job Type</label>
+                          <select
+                            name="jobType"
+                            value={formData.details.jobPreferences.jobType}
+                            onChange={handleJobPreferenceChange}
+                            className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900"
+                          >
+                            <option value="remote">Remote</option>
+                            <option value="onsite">Onsite</option>
+                            <option value="hybrid">Hybrid</option>
+                          </select>
+                        </div>
+                        <div className="md:col-span-2 space-y-2">
+                          <label className="text-sm font-semibold text-gray-700">Preferred Locations</label>
+                          <input
+                            type="text"
+                            name="preferredLocations"
+                            value={formData.details.jobPreferences.preferredLocations}
+                            onChange={handleJobPreferenceChange}
+                            placeholder="New York, San Francisco, London (comma separated)"
+                            className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-semibold text-gray-700">Expected Salary</label>
+                          <input
+                            type="text"
+                            name="expectedSalary"
+                            value={formData.details.jobPreferences.expectedSalary}
+                            onChange={handleJobPreferenceChange}
+                            placeholder="e.g., 120k USD, £80k"
+                            className="w-full p-4 bg-white/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-500"
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {currentStep === 7 && (
+                    <motion.div
+                      key="review"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      className="space-y-6"
+                    >
+                      <div className="text-center mb-8">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2">Review Your Profile</h3>
+                        <p className="text-gray-600">Please review all information before submitting</p>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div className="p-4 bg-blue-50 rounded-xl">
+                          <h4 className="font-semibold text-blue-900 mb-2">Profile Name</h4>
+                          <p className="text-blue-700">{formData.profileName || 'Not specified'}</p>
+                        </div>
+                        <div className="p-4 bg-green-50 rounded-xl">
+                          <h4 className="font-semibold text-green-900 mb-2">Full Name</h4>
+                          <p className="text-green-700">{formData.details.fullName || 'Not specified'}</p>
+                        </div>
+                        <div className="p-4 bg-purple-50 rounded-xl">
+                          <h4 className="font-semibold text-purple-900 mb-2">Experience Entries</h4>
+                          <p className="text-purple-700">{formData.details.experience.length} experience(s) added</p>
+                        </div>
+                        <div className="p-4 bg-orange-50 rounded-xl">
+                          <h4 className="font-semibold text-orange-900 mb-2">Education Entries</h4>
+                          <p className="text-orange-700">{formData.details.education.length} education(s) added</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Navigation Buttons */}
+                <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+                  <motion.button
+                    type="button"
+                    onClick={prevStep}
+                    disabled={currentStep === 0}
+                    whileHover={{ scale: currentStep > 0 ? 1.02 : 1 }}
+                    whileTap={{ scale: currentStep > 0 ? 0.98 : 1 }}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                      currentStep > 0
+                        ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                    Previous
+                  </motion.button>
+
+                  <div className="flex gap-2">
+                    {STEPS.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                          index === currentStep
+                            ? 'bg-blue-500 w-8'
+                            : index < currentStep
+                            ? 'bg-green-500'
+                            : 'bg-gray-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {currentStep < STEPS.length - 1 ? (
+                    <motion.button
+                      type="button"
+                      onClick={nextStep}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg"
+                    >
+                      Next
+                      <ChevronRight className="w-5 h-5" />
+                    </motion.button>
+                  ) : (
+                    <motion.button
+                      type="submit"
+                      disabled={loading}
+                      whileHover={{ scale: loading ? 1 : 1.02 }}
+                      whileTap={{ scale: loading ? 1 : 0.98 }}
+                      className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {loading ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          Creating Profile...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-5 h-5" />
+                          Create Profile
+                        </>
+                      )}
+                    </motion.button>
+                  )}
+                </div>
+              </form>
+            </motion.div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
