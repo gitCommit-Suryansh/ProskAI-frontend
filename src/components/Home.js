@@ -22,6 +22,7 @@ import {
 import extensionVideo from "../assets/videos/extension.mp4";
 import trackerVideo from "../assets/videos/applicationTracker.mp4";
 import resumeVideo from "../assets/videos/resumeOptimizer.mp4";
+import coverletterVideo from "../assets/videos/coverletterGenerator.mp4";
 import heroBrowserMockup from "../assets/images/browser-mockup.png"; // Recommended: A new transparent PNG of your app in a browser
 
 // Register GSAP Plugin
@@ -54,7 +55,7 @@ const features = [
     description:
       "Generate personalized cover letters in seconds. Our AI crafts compelling narratives that are unique to each job you apply for.",
     icon: Users,
-    video: resumeVideo, // You can replace this with a specific cover letter video
+    video: coverletterVideo, // You can replace this with a specific cover letter video
   },
 ];
 
