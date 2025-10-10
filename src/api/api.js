@@ -2,8 +2,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  // baseURL: "http://localhost:5000/api", // your backend
-  baseURL: "https://proskai-backend.onrender.com/api", // your backend
+  baseURL: "http://localhost:5000/api", // your backend
+  // baseURL: "https://proskai-backend.onrender.com/api", // your backend
 });
 
 // Attach token if exists

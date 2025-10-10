@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 import { User, Mail, Lock, XCircle, CheckCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
 import api from "../api/api";
-import { setToken } from "../utils/auth";
+import { setToken,setUser } from "../utils/auth";
 import { useNavigate } from 'react-router-dom'
 
 
@@ -84,6 +84,7 @@ export default function Signup() {
       // Mock API call to preserve original logic flow
       const res = await api.post("/auth/signup", form); 
       setToken(res.data.token);
+      setUser(res.data.user);
       setMessage({ type: 'success', text: "Signup successful! Redirecting..." });
       navigate("/");
     } catch (err) {

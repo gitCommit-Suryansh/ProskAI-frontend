@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { motion } from 'framer-motion';
 import {
   Sparkles,
@@ -42,10 +42,14 @@ import {
   Globe,
   ChevronRight,
   ChevronDown,
-  MoreHorizontal
+  MoreHorizontal,
+  Link as LinkIcon
 } from 'lucide-react';
+import { Link } from 'react-router-dom'
 
-// Mock data for demonstration
+
+
+
 const mockData = {
   stats: {
     totalApplications: 47,
@@ -65,31 +69,10 @@ const mockData = {
       source: 'LinkedIn',
       nextAction: 'Technical Interview - Jan 25'
     },
-   
+
   ],
-  profiles: [
-    {
-      id: 1,
-      name: 'Primary Resume',
-      lastUpdated: '2024-01-20',
-      applications: 23,
-      isActive: true
-    },
-    {
-      id: 2,
-      name: 'Tech Lead Profile',
-      lastUpdated: '2024-01-18',
-      applications: 15,
-      isActive: false
-    },
-    {
-      id: 3,
-      name: 'Startup Focus',
-      lastUpdated: '2024-01-15',
-      applications: 9,
-      isActive: false
-    }
-  ],
+  profiles: [],
+
   analytics: {
     applicationsByMonth: [
       { month: 'Oct', count: 8 },
@@ -147,12 +130,11 @@ const ApplicationCard = ({ application }) => (
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-          application.status === 'Offer' ? 'bg-green-100 text-green-700' :
+        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${application.status === 'Offer' ? 'bg-green-100 text-green-700' :
           application.status === 'Interview' ? 'bg-yellow-100 text-yellow-700' :
-          application.status === 'Applied' ? 'bg-blue-100 text-blue-700' :
-          'bg-red-100 text-red-700'
-        }`}>
+            application.status === 'Applied' ? 'bg-blue-100 text-blue-700' :
+              'bg-red-100 text-red-700'
+          }`}>
           {application.status}
         </span>
         <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
@@ -160,7 +142,7 @@ const ApplicationCard = ({ application }) => (
         </button>
       </div>
     </div>
-    
+
     <div className="grid grid-cols-2 gap-4 mb-4">
       <div className="flex items-center gap-2 text-sm text-gray-600">
         <DollarSign className="w-4 h-4" />
@@ -179,7 +161,7 @@ const ApplicationCard = ({ application }) => (
         <span>{application.source}</span>
       </div>
     </div>
-    
+
     <div className="p-3 bg-blue-50 rounded-lg">
       <p className="text-sm text-blue-700">
         <strong>Next Action:</strong> {application.nextAction}
@@ -195,11 +177,10 @@ const ProfileCard = ({ profile }) => (
   >
     <div className="flex items-start justify-between mb-4">
       <div className="flex items-center gap-3">
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-          profile.isActive 
-            ? 'bg-gradient-to-r from-green-500 to-blue-500' 
-            : 'bg-gray-200'
-        }`}>
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${profile.isActive
+          ? 'bg-gradient-to-r from-green-500 to-blue-500'
+          : 'bg-gray-200'
+          }`}>
           <User className="w-6 h-6 text-white" />
         </div>
         <div>
@@ -218,7 +199,7 @@ const ProfileCard = ({ profile }) => (
         </button>
       </div>
     </div>
-    
+
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center gap-4">
         <div className="text-center">
@@ -227,7 +208,7 @@ const ProfileCard = ({ profile }) => (
         </div>
       </div>
     </div>
-    
+
     <div className="flex gap-2">
       <button className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold">
         <Edit className="w-4 h-4 inline mr-2" />
@@ -246,6 +227,23 @@ const ProfileCard = ({ profile }) => (
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [userInitials, setUserInitials] = useState('');
+  // Mock data for demonstration
+
+  useEffect(() => {
+    const userDataString = localStorage.getItem('user');
+
+    if (userDataString) {
+      const userData = JSON.parse(userDataString);
+      const name = userData.name; // Get the name from the object
+
+      if (name) {
+        const nameParts = name.split(' ');
+        const initials = (nameParts[0] ? nameParts[0][0] : '') + (nameParts.length > 1 ? nameParts[1][0] : '');
+        setUserInitials(initials.toUpperCase());
+      }
+    }
+  }, []); // The empty array [] ensures this runs only once
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -264,7 +262,7 @@ const Dashboard = () => {
                 <p className="text-sm text-gray-600">Welcome back! Here's your job search overview.</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-4">
               <div className="relative">
                 <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -281,6 +279,11 @@ const Dashboard = () => {
               <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <Settings className="w-5 h-5 text-gray-600" />
               </button>
+              {userInitials && (
+                <div className="w-10 h-10 bg-gradient-to-r from-gray-700 to-gray-900 rounded-full flex items-center justify-center font-bold text-white">
+                  {userInitials}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -308,11 +311,10 @@ const Dashboard = () => {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
-                    activeTab === item.id
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
-                      : 'text-gray-600 hover:bg-white/50'
-                  }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${activeTab === item.id
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
+                    : 'text-gray-600 hover:bg-white/50'
+                    }`}
                 >
                   <item.icon className="w-5 h-5" />
                   <span className="font-medium">{item.label}</span>
@@ -376,7 +378,7 @@ const Dashboard = () => {
                     New Application
                   </button>
                 </div>
-                
+
                 <div className="space-y-4">
                   {mockData.recentApplications.map((application) => (
                     <ApplicationCard key={application.id} application={application} />
@@ -463,10 +465,10 @@ const Dashboard = () => {
                   <h2 className="text-3xl font-bold text-gray-900">Profile Management</h2>
                   <p className="text-gray-600">Manage your professional profiles and resumes</p>
                 </div>
-                <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg">
+                <Link to="/createprofile" className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg">
                   <Plus className="w-5 h-5" />
                   Create New Profile
-                </button>
+                </Link>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

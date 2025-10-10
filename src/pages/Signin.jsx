@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import api from "../api/api";
-import { setToken } from "../utils/auth";
+import { setToken,setUser } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
 
 
@@ -20,6 +20,7 @@ export default function Signin() {
     try {
       const res = await api.post("/auth/signin", form);
       setToken(res.data.token);
+      setUser(res.data.user);
       // alert("Signin successful!");
       navigate('/Dashboard')
     } catch (err) {
