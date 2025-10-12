@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Sparkles,
@@ -18,6 +18,8 @@ import {
   Download,
   Edit,
   Trash2,
+  Github,
+  Linkedin,
   Eye,
   Share,
   Star,
@@ -46,8 +48,7 @@ import {
   Link as LinkIcon
 } from 'lucide-react';
 import { Link } from 'react-router-dom'
-
-
+import api from '../api/api'; // Make sure this path is correct for your API utility
 
 
 const mockData = {
@@ -170,65 +171,102 @@ const ApplicationCard = ({ application }) => (
   </motion.div>
 );
 
-const ProfileCard = ({ profile }) => (
-  <motion.div
-    whileHover={{ scale: 1.02 }}
-    className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300"
-  >
-    <div className="flex items-start justify-between mb-4">
-      <div className="flex items-center gap-3">
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${profile.isActive
-          ? 'bg-gradient-to-r from-green-500 to-blue-500'
-          : 'bg-gray-200'
-          }`}>
-          <User className="w-6 h-6 text-white" />
+const ProfileCard = ({ profile, onDelete }) => {
+  // Destructure for easier access
+  const { profileName, updatedAt, details } = profile;
+  const { personalInfo, careerSummary, contactInfo } = details;
+
+  const lastUpdated = new Date(updatedAt).toLocaleDateString("en-IN", {
+    day: 'numeric', month: 'short', year: 'numeric'
+  });
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+      whileHover={{ scale: 1.02, y: -5 }}
+      className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 flex flex-col"
+    >
+      {/* --- Header --- */}
+      <div className="flex items-start justify-between mb-4">
+        <div>
+          <h3 className="text-xl font-bold text-gray-900">{profileName}</h3>
+          <p className="text-sm text-gray-600 capitalize">
+            {`${personalInfo.firstName} ${personalInfo.lastName}`}
+          </p>
+        </div>
+        <div className="text-right flex-shrink-0">
+          <p className="text-xs text-gray-500">Last Updated</p>
+          <p className="text-xs font-medium text-gray-700">{lastUpdated}</p>
+        </div>
+      </div>
+
+      {/* --- Key Stats --- */}
+      <div className="grid grid-cols-3 gap-4 text-center my-4 py-4 border-y border-gray-200">
+        <div>
+          <p className="text-2xl font-bold text-blue-600">{careerSummary.totalExperienceInYears || 0}</p>
+          <p className="text-xs text-gray-600">Years Exp.</p>
         </div>
         <div>
-          <h3 className="font-bold text-gray-900">{profile.name}</h3>
-          <p className="text-gray-600 text-sm">Updated {profile.lastUpdated}</p>
+          <p className="text-2xl font-bold text-purple-600">{careerSummary.experience.length}</p>
+          <p className="text-xs text-gray-600">Roles</p>
+        </div>
+        <div>
+          <p className="text-2xl font-bold text-green-600">{careerSummary.projects.length}</p>
+          <p className="text-xs text-gray-600">Projects</p>
         </div>
       </div>
-      <div className="flex items-center gap-2">
-        {profile.isActive && (
-          <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
-            Active
-          </span>
-        )}
-        <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-          <MoreHorizontal className="w-4 h-4 text-gray-500" />
-        </button>
-      </div>
-    </div>
 
-    <div className="flex items-center justify-between mb-4">
-      <div className="flex items-center gap-4">
-        <div className="text-center">
-          <p className="text-2xl font-bold text-gray-900">{profile.applications}</p>
-          <p className="text-xs text-gray-600">Applications</p>
+      {/* --- Top Skills --- */}
+      <div className="mb-6 flex-grow">
+        <h4 className="text-sm font-semibold text-gray-700 mb-2">Top Skills</h4>
+        <div className="flex flex-wrap gap-2">
+          {careerSummary.skills.slice(0, 4).map((skill, i) => (
+            <span key={i} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+              {skill}
+            </span>
+          ))}
+          {careerSummary.skills.length > 4 && (
+            <span className="px-2 py-1 bg-gray-200 text-gray-800 text-xs font-medium rounded-full">
+              +{careerSummary.skills.length - 4} more
+            </span>
+          )}
         </div>
       </div>
-    </div>
 
-    <div className="flex gap-2">
-      <button className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold">
-        <Edit className="w-4 h-4 inline mr-2" />
-        Edit
-      </button>
-      <button className="py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-        <Eye className="w-4 h-4" />
-      </button>
-      <button className="py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-        <Share className="w-4 h-4" />
-      </button>
-    </div>
-  </motion.div>
-);
+      {/* --- Actions & Socials --- */}
+      <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-200">
+        <div className="flex items-center gap-2">
+          {contactInfo.socials.github && (
+            <a href={contactInfo.socials.github} target="_blank" rel="noopener noreferrer" className="p-2 text-gray-500 hover:text-gray-900 transition-colors"><Github className="w-5 h-5" /></a>
+          )}
+          {contactInfo.socials.linkedin && (
+            <a href={contactInfo.socials.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 text-gray-500 hover:text-blue-600 transition-colors"><Linkedin className="w-5 h-5" /></a>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <button className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors">
+            <Edit className="w-5 h-5" />
+          </button>
+          <button onClick={() => onDelete(profile._id)} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors">
+            <Trash2 className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userInitials, setUserInitials] = useState('');
-  // Mock data for demonstration
+  const [profiles, setProfiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
 
   useEffect(() => {
     const userDataString = localStorage.getItem('user');
@@ -245,6 +283,41 @@ const Dashboard = () => {
     }
   }, []); // The empty array [] ensures this runs only once
 
+  useEffect(() => {
+    const fetchUserProfiles = async () => {
+      if (profiles.length > 0 || isLoading) return;
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const userDataString = localStorage.getItem('user');
+        if (!userDataString) throw new Error("User not found. Please log in again.");
+
+        const user = JSON.parse(userDataString);
+        const userId = user.id;
+        if (!userId) throw new Error("User ID is missing. Please log in again.");
+
+        const response = await api.get(`/profiles/getprofiles/${userId}`);
+        setProfiles(response.data);
+
+      } catch (err) {
+        console.error("Failed to fetch profiles:", err);
+        setError(err.message || "Could not load profiles.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (activeTab === 'profiles') {
+      fetchUserProfiles();
+    }
+  }, [activeTab]);
+
+  const handleDeleteProfile = (profileId) => {
+    console.log("Deleting profile:", profileId);
+    setProfiles(prevProfiles => prevProfiles.filter(p => p._id !== profileId));
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Header */}
@@ -455,11 +528,7 @@ const Dashboard = () => {
           )}
 
           {activeTab === 'profiles' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-8"
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900">Profile Management</h2>
@@ -471,11 +540,24 @@ const Dashboard = () => {
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockData.profiles.map((profile) => (
-                  <ProfileCard key={profile.id} profile={profile} />
-                ))}
-              </div>
+              {isLoading && <p className="text-center text-gray-600 py-10">Loading your profiles...</p>}
+              {error && <p className="text-center text-red-600 bg-red-100 p-4 rounded-lg">{error}</p>}
+
+              {!isLoading && !error && profiles.length > 0 && (
+                <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {profiles.map((profile) => (
+                    <ProfileCard key={profile._id} profile={profile} onDelete={handleDeleteProfile} />
+                  ))}
+                </motion.div>
+              )}
+
+              {!isLoading && !error && profiles.length === 0 && (
+                <div className="text-center py-16 bg-white/50 rounded-2xl border-2 border-dashed border-gray-300">
+                  <User className="w-16 h-16 mx-auto text-gray-400" />
+                  <h3 className="mt-4 text-xl font-bold text-gray-800">No Profiles Yet</h3>
+                  <p className="mt-2 text-gray-600">Click "Create New Profile" to get started.</p>
+                </div>
+              )}
             </motion.div>
           )}
 

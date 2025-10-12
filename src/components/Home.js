@@ -14,10 +14,15 @@ import {
   Award,
   CircleArrowRight,
   Send,
-  Code,
   Rocket,
   Wand2,
   Star,
+  Code,
+  Briefcase,
+  GraduationCap,
+  Megaphone,
+  Database,
+  PenTool,Check
 } from "lucide-react";
 
 // ASSETS - Make sure these paths are correct
@@ -26,14 +31,6 @@ import trackerVideo from "../assets/videos/applicationTracker.mp4";
 import resumeVideo from "../assets/videos/resumeOptimizer.mp4";
 import coverletterVideo from "../assets/videos/coverletterGenerator.mp4";
 import heroBrowserMockup from "../assets/images/browser-mockup.png";
-
-// Placeholder logos - replace with actual company logos
-import trustedLogo1 from "../assets/images/googleLogo.png";
-import trustedLogo2 from "../assets/images/googleLogo.png";
-import trustedLogo3 from "../assets/images/googleLogo.png";
-import trustedLogo4 from "../assets/images/googleLogo.png";
-import trustedLogo5 from "../assets/images/googleLogo.png";
-import trustedLogo6 from "../assets/images/googleLogo.png";
 
 // Register GSAP Plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -112,13 +109,13 @@ const testimonials = [
   },
 ];
 
-const trustedLogos = [
-  { src: trustedLogo1, alt: "Company A" },
-  { src: trustedLogo2, alt: "Company B" },
-  { src: trustedLogo3, alt: "Company C" },
-  { src: trustedLogo4, alt: "Company D" },
-  { src: trustedLogo5, alt: "Company E" },
-  { src: trustedLogo6, alt: "Company F" },
+const trustedRoles = [
+  { title: "Engineers", icon: Code },
+  { title: "Managers", icon: Briefcase },
+  { title: "Graduates", icon: GraduationCap },
+  { title: "Marketers", icon: Megaphone },
+  { title: "Analysts", icon: Database },
+  { title: "Designers", icon: PenTool },
 ];
 
 export default function Home() {
@@ -235,6 +232,38 @@ export default function Home() {
     },
   };
 
+  const pricingPlans = [
+    {
+      name: "Starter",
+      price: "$0",
+      frequency: "/ forever",
+      description: "For casual job seekers getting started.",
+      features: [
+        "5 AI-assisted applications per month",
+        "Basic application tracking",
+        "1 AI Resume scan per week",
+        "2 AI Cover letter generations per week",
+      ],
+      cta: "Start for Free",
+      isFeatured: false,
+    },
+    {
+      name: "Pro",
+      price: "$12",
+      frequency: "/ month",
+      description: "For serious job seekers who want an unfair advantage.",
+      features: [
+        "Unlimited AI-assisted applications",
+        "Advanced application tracking & analytics",
+        "Unlimited AI resume scans & optimizations",
+        "Unlimited AI cover letter generation",
+        "Priority support",
+      ],
+      cta: "Upgrade to Pro",
+      isFeatured: true,
+    },
+  ];
+
   return (
     <div
       ref={main}
@@ -285,10 +314,8 @@ export default function Home() {
       </header>
 
       <section className="relative flex flex-col items-center justify-center min-h-screen px-4 md:px-10 py-32 text-center overflow-hidden">
-        
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] max-w-2xl max-h-2xl bg-blue-600/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] max-w-2xl max-h-2xl bg-blue-600/30 rounded-full blur-3xl animate-pulse"></div>
 
-        
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -381,29 +408,33 @@ export default function Home() {
       </section>
 
       <section className="py-20 px-4 md:px-10 text-center">
+
+        {/* Change the heading to something like this */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-gray-400 text-lg mb-12 font-medium"
         >
-          Trusted by forward-thinking professionals at leading companies.
+          Built for ambitious talent in every field.
         </motion.p>
+
+        {/* This is the section you need to modify */}
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center justify-center opacity-70">
-          {trustedLogos.map((logo, i) => (
+          {/* The map function now uses 'trustedRoles' */}
+          {trustedRoles.map((role, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.7, delay: i * 0.1 }}
-              className="flex justify-center items-center"
+              className="flex flex-col items-center gap-3 text-gray-400"
             >
-              <img
-                src={logo.src}
-                alt={logo.alt}
-                className="max-h-12 w-auto filter grayscale hover:grayscale-0 transition-all duration-300"
-              />
+              {/* Render the Icon component */}
+              <role.icon className="w-10 h-10" />
+              {/* Render the title */}
+              <span className="font-semibold">{role.title}</span>
             </motion.div>
           ))}
         </div>
@@ -526,14 +557,17 @@ export default function Home() {
           </div>
 
           <div className="relative w-full h-[600px] flex items-center">
-            <div ref={horizontalContainerRef} className="flex flex-nowrap h-full">
+            <div
+              ref={horizontalContainerRef}
+              className="flex flex-nowrap h-full"
+            >
               {[
                 {
                   title: "1. Install & Integrate",
                   desc: "Seamlessly add our Chrome extension, sign up, and connect your profiles. Get ready in minutes.",
                   icon: Code,
                   color: "from-blue-500 to-cyan-500",
-                },  
+                },
                 {
                   title: "2. One-Click Apply",
                   desc: "Browse any job board, and let ProskAI intelligently autofill forms and track your applications instantly.",
@@ -581,8 +615,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        
 
         <section
           id="testimonials"
@@ -634,7 +666,9 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-bold text-white">{t.name}</h4>
-                    <p className="text-blue-400 font-medium text-sm">{t.role}</p>
+                    <p className="text-blue-400 font-medium text-sm">
+                      {t.role}
+                    </p>
                   </div>
                 </div>
               </motion.div>
@@ -644,6 +678,77 @@ export default function Home() {
       </div>
       {/* ▲▲▲ WRAPPER DIV ENDS HERE ▲▲▲ */}
 
+      {/* ✨ NEW: PRICING SECTION JSX */}
+      <section id="pricing" className="py-32 px-4 md:px-10">
+        <div className="text-center mb-20">
+          <motion.h3
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-5xl font-bold mb-6 text-white"
+          >
+            Simple, Transparent Pricing
+          </motion.h3>
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-gray-400 text-xl max-w-2xl mx-auto"
+          >
+            Start for free and upgrade when you're ready to supercharge your job search.
+          </motion.p>
+        </div>
+
+        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 items-start">
+          {pricingPlans.map((plan, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.7, delay: i * 0.2 }}
+              className={`p-8 rounded-3xl border transition-all duration-300 h-full flex flex-col ${
+                plan.isFeatured
+                  ? "bg-white/10 backdrop-blur-xl border-purple-500 shadow-2xl shadow-purple-500/10"
+                  : "bg-white/5 backdrop-blur-md border-white/10"
+              }`}
+            >
+              {plan.isFeatured && (
+                <div className="text-center mb-4">
+                  <span className="px-4 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full text-sm font-semibold">
+                    Most Popular
+                  </span>
+                </div>
+              )}
+              <h4 className="text-3xl font-bold text-white text-center">{plan.name}</h4>
+              <p className="text-center text-gray-400 mt-2 mb-6">{plan.description}</p>
+              <div className="text-center my-4">
+                <span className="text-5xl font-extrabold text-white">{plan.price}</span>
+                <span className="text-gray-400 text-lg">{plan.frequency}</span>
+              </div>
+              <ul className="space-y-4 my-8 text-gray-300 flex-grow">
+                {plan.features.map((feature, j) => (
+                  <li key={j} className="flex items-start gap-3">
+                    <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-1" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`w-full py-4 rounded-full font-bold text-lg mt-auto transition-all duration-300 ${
+                  plan.isFeatured
+                    ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
+                    : "bg-white/10 text-white hover:bg-white/20"
+                }`}
+              >
+                {plan.cta}
+              </motion.button>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
       <section className="py-32 px-4 md:px-10 relative overflow-hidden">
         <div className="max-w-4xl mx-auto text-center p-12 md:p-16 bg-gradient-to-br from-blue-700/40 via-purple-700/40 to-pink-700/40 rounded-3xl border border-white/10 relative overflow-hidden shadow-2xl">
