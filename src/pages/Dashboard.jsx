@@ -400,132 +400,6 @@ const Dashboard = () => {
 
         {/* Main Content */}
         <div className="flex-1 p-8">
-          {activeTab === 'overview' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-8"
-            >
-              {/* Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard
-                  title="Total Applications"
-                  value={mockData.stats.totalApplications}
-                  change="+12"
-                  icon={Briefcase}
-                  color="bg-gradient-to-r from-blue-500 to-blue-600"
-                  trend="up"
-                />
-                <StatCard
-                  title="Interviews"
-                  value={mockData.stats.interviews}
-                  change="+8"
-                  icon={Calendar}
-                  color="bg-gradient-to-r from-yellow-500 to-yellow-600"
-                  trend="up"
-                />
-                <StatCard
-                  title="Offers"
-                  value={mockData.stats.offers}
-                  change="+2"
-                  icon={Award}
-                  color="bg-gradient-to-r from-green-500 to-green-600"
-                  trend="up"
-                />
-                <StatCard
-                  title="Success Rate"
-                  value={`${mockData.stats.successRate}%`}
-                  change="+5.2"
-                  icon={TrendingUp}
-                  color="bg-gradient-to-r from-purple-500 to-purple-600"
-                  trend="up"
-                />
-              </div>
-
-              {/* Recent Applications */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/50 p-8">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">Recent Applications</h2>
-                  <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
-                    <Plus className="w-4 h-4" />
-                    New Application
-                  </button>
-                </div>
-
-                <div className="space-y-4">
-                  {mockData.recentApplications.map((application) => (
-                    <ApplicationCard key={application.id} application={application} />
-                  ))}
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 cursor-pointer"
-                >
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-xl flex items-center justify-center">
-                      <Zap className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900">Resume Optimizer</h3>
-                      <p className="text-gray-600 text-sm">AI-powered resume enhancement</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 text-sm mb-4">
-                    Optimize your resume for specific job descriptions using our AI technology.
-                  </p>
-                  <button className="w-full py-2 px-4 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-xl hover:from-green-600 hover:to-blue-600 transition-all duration-300">
-                    Optimize Now
-                  </button>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 cursor-pointer"
-                >
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-                      <PenTool className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900">Cover Letter Builder</h3>
-                      <p className="text-gray-600 text-sm">Generate tailored cover letters</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 text-sm mb-4">
-                    Create personalized cover letters that match job requirements.
-                  </p>
-                  <button className="w-full py-2 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300">
-                    Create Letter
-                  </button>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 cursor-pointer"
-                >
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
-                      <Brain className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900">AI Assistant</h3>
-                      <p className="text-gray-600 text-sm">Get personalized job search advice</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 text-sm mb-4">
-                    Get AI-powered insights and recommendations for your job search.
-                  </p>
-                  <button className="w-full py-2 px-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300">
-                    Ask AI
-                  </button>
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
 
           {activeTab === 'profiles' && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
@@ -570,6 +444,132 @@ const Dashboard = () => {
               <div className="text-center">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">Resume Optimizer</h2>
                 <p className="text-gray-600 text-lg">AI-powered resume enhancement coming soon...</p>
+              </div>
+            </motion.div>
+          )}
+          {activeTab === 'overview' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-8"
+            >
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <StatCard
+                  title="Total Applications"
+                  value={mockData.stats.totalApplications}
+                  change="+12"
+                  icon={Briefcase}
+                  color="bg-gradient-to-r from-blue-500 to-blue-600"
+                  trend="up"
+                />
+                <StatCard
+                  title="Interviews"
+                  value={mockData.stats.interviews}
+                  change="+8"
+                  icon={Calendar}
+                  color="bg-gradient-to-r from-yellow-500 to-yellow-600"
+                  trend="up"
+                />
+                <StatCard
+                  title="Offers"
+                  value={mockData.stats.offers}
+                  change="+2"
+                  icon={Award}
+                  color="bg-gradient-to-r from-green-500 to-green-600"
+                  trend="up"
+                />
+                <StatCard
+                  title="Success Rate"
+                  value={`${mockData.stats.successRate}%`}
+                  change="+5.2"
+                  icon={TrendingUp}
+                  color="bg-gradient-to-r from-purple-500 to-purple-600"
+                  trend="up"
+                />
+              </div>
+          
+              {/* Recent Applications */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/50 p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">Recent Applications</h2>
+                  <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
+                    <Plus className="w-4 h-4" />
+                    New Application
+                  </button>
+                </div>
+          
+                <div className="space-y-4">
+                  {mockData.recentApplications.map((application) => (
+                    <ApplicationCard key={application.id} application={application} />
+                  ))}
+                </div>
+              </div>
+          
+              {/* Quick Actions */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 cursor-pointer"
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-xl flex items-center justify-center">
+                      <Zap className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">Resume Optimizer</h3>
+                      <p className="text-gray-600 text-sm">AI-powered resume enhancement</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Optimize your resume for specific job descriptions using our AI technology.
+                  </p>
+                  <button className="w-full py-2 px-4 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-xl hover:from-green-600 hover:to-blue-600 transition-all duration-300">
+                    Optimize Now
+                  </button>
+                </motion.div>
+          
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 cursor-pointer"
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                      <PenTool className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">Cover Letter Builder</h3>
+                      <p className="text-gray-600 text-sm">Generate tailored cover letters</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Create personalized cover letters that match job requirements.
+                  </p>
+                  <button className="w-full py-2 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300">
+                    Create Letter
+                  </button>
+                </motion.div>
+          
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 cursor-pointer"
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                      <Brain className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">AI Assistant</h3>
+                      <p className="text-gray-600 text-sm">Get personalized job search advice</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Get AI-powered insights and recommendations for your job search.
+                  </p>
+                  <button className="w-full py-2 px-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-300">
+                    Ask AI
+                  </button>
+                </motion.div>
               </div>
             </motion.div>
           )}
