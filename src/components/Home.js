@@ -31,6 +31,7 @@ import trackerVideo from "../assets/videos/applicationTracker.mp4";
 import resumeVideo from "../assets/videos/resumeOptimizer.mp4";
 import coverletterVideo from "../assets/videos/coverletterGenerator.mp4";
 import heroBrowserMockup from "../assets/images/browser-mockup.png";
+import Logo from "./Logo";
 
 // Register GSAP Plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -281,10 +282,7 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="flex items-center gap-2"
         >
-          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
-          <h1 className="text-xl font-bold text-white">ProskAI</h1>
+          <Logo/>
         </motion.div>
         <nav className="hidden md:flex space-x-8 text-gray-300 font-medium">
           {["Features", "How It Works", "Testimonials", "Pricing"].map(
