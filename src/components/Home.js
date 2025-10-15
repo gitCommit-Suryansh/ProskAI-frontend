@@ -22,7 +22,8 @@ import {
   GraduationCap,
   Megaphone,
   Database,
-  PenTool,Check
+  PenTool,
+  Check,
 } from "lucide-react";
 
 // ASSETS - Make sure these paths are correct
@@ -32,6 +33,27 @@ import resumeVideo from "../assets/videos/resumeOptimizer.mp4";
 import coverletterVideo from "../assets/videos/coverletterGenerator.mp4";
 import heroBrowserMockup from "../assets/images/browser-mockup.png";
 import Logo from "./Logo";
+
+import harvardLogo from "../assets/images/svgs/Harvard_University_shield.svg.png";
+import mitLogo from "../assets/images/svgs/MIT_logo.svg.png";
+import stanfordLogo from "../assets/images/svgs/Stanford_Cardinal_logo.svg.png";
+import cmuLogo from "../assets/images/svgs/Carnegie_Mellon_University_seal.svg.png";
+import nyuLogo from "../assets/images/svgs/Nyu_short_color.svg.png";
+import indianaLogo from "../assets/images/svgs/Indiana_University_logotype.svg.png";
+import illinoisLogo from "../assets/images/svgs/University_of_Illinois_seal.svg.png";
+import uwLogo from "../assets/images/svgs/Seal_of_the_University_of_Wisconsin.svg.png";
+import tamuLogo from "../assets/images/svgs/Texas_A&M_University_logo.svg.png";
+import asuLogo from "../assets/images/svgs/Arizona_State_University_seal.svg.png";
+import berkeleyLogo from "../assets/images/svgs/Seal_of_University_of_California,_Berkeley.svg.png";
+import michiganLogo from "../assets/images/svgs/University_of_Michigan_logo.svg.png";
+import utAustinLogo from "../assets/images/svgs/University_of_Texas_at_Austin_seal.svg.png";
+import ucsdLogo from "../assets/images/svgs/Seal_of_the_University_of_California,_San_Diego.svg.png";
+import yaleLogo from "../assets/images/svgs/Yale_University_logo.svg.png";
+import uscLogo from "../assets/images/svgs/University_of_Southern_California_seal.svg.png";
+import cornellLogo from "../assets/images/svgs/cornell.png";
+import upennLogo from "../assets/images/svgs/UPenn_shield_with_banner.svg.png";
+import northwesternLogo from "../assets/images/svgs/Northwestern_University_seal.svg.png";
+import purdueLogo from "../assets/images/svgs/Purdue_University_Northwest.svg.png";
 
 // Register GSAP Plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -73,50 +95,72 @@ const features = [
 
 const testimonials = [
   {
-    name: "Aarav Mehta",
+    name: "Noah Evans",
     role: "Software Engineer",
     text: "ProskAI is a game-changer! It slashed my application time by 90% and I started getting interviews almost immediately.",
-    avatar: "AM",
+    avatar: "NE",
   },
   {
-    name: "Sneha Kapoor",
+    name: "Olivia Chen",
     role: "Product Manager",
     text: "The resume optimizer is brilliant. It helped me craft a targeted resume that got past ATS and landed me my dream job!",
-    avatar: "SK",
+    avatar: "OC",
   },
   {
-    name: "Rahul Sharma",
+    name: "Liam Rodriguez",
     role: "Data Scientist",
     text: "Finally, a tool that truly streamlines the job search. Tracking everything in one place is invaluable.",
-    avatar: "RS",
+    avatar: "LR",
   },
   {
-    name: "Priya Singh",
+    name: "Emma Wilson",
     role: "Marketing Specialist",
     text: "The cover letter generator saves so much time, and the quality is surprisingly good. Highly recommend!",
-    avatar: "PS",
+    avatar: "EW",
   },
   {
-    name: "Vikram Reddy",
+    name: "Ethan Carter",
     role: "UX Designer",
     text: "I used to dread applying, but ProskAI made it effortless. The Chrome extension is pure magic.",
-    avatar: "VR",
+    avatar: "EC",
   },
   {
-    name: "Divya Patel",
+    name: "Sophia Taylor",
     role: "Project Manager",
     text: "From tracking to tailoring, ProskAI has it all. My job search went from overwhelming to organized.",
-    avatar: "DP",
+    avatar: "ST",
   },
 ];
 
 const trustedRoles = [
-  { title: "Engineers", icon: Code },
   { title: "Managers", icon: Briefcase },
   { title: "Graduates", icon: GraduationCap },
   { title: "Marketers", icon: Megaphone },
   { title: "Analysts", icon: Database },
   { title: "Designers", icon: PenTool },
+];
+
+const universityLogos = [
+  { src: harvardLogo, alt: "Harvard University" },
+  { src: mitLogo, alt: "MIT" },
+  { src: stanfordLogo, alt: "Stanford University" },
+  { src: cmuLogo, alt: "Carnegie Mellon University" },
+  { src: nyuLogo, alt: "NYU" },
+  { src: indianaLogo, alt: "Indiana University" },
+  { src: illinoisLogo, alt: "University of Illinois Urbana-Champaign" },
+  { src: uwLogo, alt: "University of Washington" },
+  { src: tamuLogo, alt: "Texas A&M University" },
+  { src: asuLogo, alt: "Arizona State University" },
+  { src: berkeleyLogo, alt: "UC Berkeley" },
+  { src: michiganLogo, alt: "University of Michigan" },
+  { src: utAustinLogo, alt: "University of Texas at Austin" },
+  { src: ucsdLogo, alt: "UC San Diego" },
+  { src: yaleLogo, alt: "Yale University" },
+  { src: uscLogo, alt: "USC" },
+  { src: cornellLogo, alt: "Cornell University" },
+  { src: upennLogo, alt: "University of Pennsylvania" },
+  { src: northwesternLogo, alt: "Northwestern University" },
+  { src: purdueLogo, alt: "Purdue University" },
 ];
 
 export default function Home() {
@@ -235,7 +279,7 @@ export default function Home() {
 
   const pricingPlans = [
     {
-      name: "Starter",
+      name: "Freemium",
       price: "$0",
       frequency: "/ forever",
       description: "For casual job seekers getting started.",
@@ -249,8 +293,8 @@ export default function Home() {
       isFeatured: false,
     },
     {
-      name: "Pro",
-      price: "$12",
+      name: "Prosk Pro",
+      price: "$29",
       frequency: "/ month",
       description: "For serious job seekers who want an unfair advantage.",
       features: [
@@ -262,6 +306,21 @@ export default function Home() {
       ],
       cta: "Upgrade to Pro",
       isFeatured: true,
+    },
+    {
+      name: "Prosk Ultra",
+      price: "$49",
+      frequency: "/ month",
+      description: "For serious job seekers who want an unfair advantage.",
+      features: [
+        "Unlimited AI-assisted applications",
+        "Advanced application tracking & analytics",
+        "Unlimited AI resume scans & optimizations",
+        "Unlimited AI cover letter generation",
+        "Priority support",
+      ],
+      cta: "Upgrade to Pro",
+      isFeatured: false,
     },
   ];
 
@@ -282,7 +341,7 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="flex items-center gap-2"
         >
-          <Logo/>
+          <Logo />
         </motion.div>
         <nav className="hidden md:flex space-x-8 text-gray-300 font-medium">
           {["Features", "How It Works", "Testimonials", "Pricing"].map(
@@ -406,8 +465,6 @@ export default function Home() {
       </section>
 
       <section className="py-20 px-4 md:px-10 text-center">
-
-        {/* Change the heading to something like this */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -417,9 +474,8 @@ export default function Home() {
           Built for ambitious talent in every field.
         </motion.p>
 
-        {/* This is the section you need to modify */}
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center justify-center opacity-70">
-          {/* The map function now uses 'trustedRoles' */}
+        {/* 👇 THIS IS THE LINE THAT CHANGED (removed justify-center) 👇 */}
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center opacity-70">
           {trustedRoles.map((role, i) => (
             <motion.div
               key={i}
@@ -429,12 +485,57 @@ export default function Home() {
               transition={{ duration: 0.7, delay: i * 0.1 }}
               className="flex flex-col items-center gap-3 text-gray-400"
             >
-              {/* Render the Icon component */}
               <role.icon className="w-10 h-10" />
-              {/* Render the title */}
               <span className="font-semibold">{role.title}</span>
             </motion.div>
           ))}
+        </div>
+      </section>
+
+      <section className="py-20 text-center">
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="text-gray-400 text-lg mb-12 font-medium px-4"
+        >
+          Trusted by students and alumni from the world's leading universities.
+        </motion.p>
+
+        <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
+          <motion.div
+            className="flex whitespace-nowrap"
+            variants={{
+              animate: {
+                x: [0, "-100%"],
+                transition: {
+                  x: {
+                    repeat: Infinity,
+                    repeatType: "loop",
+                    duration: 25, // Adjust duration to control speed
+                    ease: "linear",
+                  },
+                },
+              },
+            }}
+            animate="animate"
+          >
+            {/* We duplicate the array to create a seamless loop */}
+            {[...universityLogos, ...universityLogos].map((logo, i) => (
+              <div
+                key={i}
+                className="flex-shrink-0  flex items-center justify-center"
+                style={{ width: "200px" }}
+              >
+                {/* 👇 THIS IS THE ONLY LINE THAT CHANGED 👇 */}
+                <img
+                  src={logo.src}
+                  alt={logo.alt}
+                  className="max-h-20 w-auto transition-transform duration-300 hover:scale-110"
+                />
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
@@ -632,20 +733,28 @@ export default function Home() {
               ProskAI.
             </p>
           </motion.div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {/* This is the new parent div for the bento grid */}
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-8 max-w-6xl mx-auto">
             {testimonials.map((t, i) => (
               <motion.div
                 key={i}
+                // This conditional logic creates the bento grid structure
+                className={`p-8 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl ${
+                  i === 0 || i === 3
+                    ? "md:col-span-4"
+                    : i === 1 || i === 2
+                    ? "md:col-span-2"
+                    : "md:col-span-3"
+                }`}
                 initial={{ opacity: 0, y: 50, rotateY: 15 }}
                 whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
                 viewport={{ once: true, amount: 0.4 }}
-                transition={{ duration: 0.7, delay: i * 0.15 }}
+                transition={{ duration: 0.7, delay: i * 0.1 }}
                 whileHover={{
                   scale: 1.03,
                   rotateY: 0,
                   boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
                 }}
-                className="p-8 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl"
               >
                 <div className="flex justify-center mb-4">
                   {[...Array(5)].map((_, starIndex) => (
@@ -693,11 +802,12 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-gray-400 text-xl max-w-2xl mx-auto"
           >
-            Start for free and upgrade when you're ready to supercharge your job search.
+            Start for free and upgrade when you're ready to supercharge your job
+            search.
           </motion.p>
         </div>
 
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 items-start">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 items-start">
           {pricingPlans.map((plan, i) => (
             <motion.div
               key={i}
@@ -718,10 +828,16 @@ export default function Home() {
                   </span>
                 </div>
               )}
-              <h4 className="text-3xl font-bold text-white text-center">{plan.name}</h4>
-              <p className="text-center text-gray-400 mt-2 mb-6">{plan.description}</p>
+              <h4 className="text-3xl font-bold text-white text-center">
+                {plan.name}
+              </h4>
+              <p className="text-center text-gray-400 mt-2 mb-6">
+                {plan.description}
+              </p>
               <div className="text-center my-4">
-                <span className="text-5xl font-extrabold text-white">{plan.price}</span>
+                <span className="text-5xl font-extrabold text-white">
+                  {plan.price}
+                </span>
                 <span className="text-gray-400 text-lg">{plan.frequency}</span>
               </div>
               <ul className="space-y-4 my-8 text-gray-300 flex-grow">
@@ -797,23 +913,29 @@ export default function Home() {
           <div>
             <h5 className="text-lg font-bold text-white mb-4">Product</h5>
             <ul className="space-y-3 text-gray-400">
-              {["Features", "Pricing", "Chrome Extension", "Integrations"].map(
-                (item) => (
-                  <li key={item}>
-                    <a href="#" className="hover:text-white transition-colors">
-                      {item}
-                    </a>
-                  </li>
-                )
-              )}
+              {["Features", "Pricing", "Chrome Extension"].map((item) => (
+                <li key={item}>
+                  {/* The href is now dynamic and valid */}
+                  <a
+                    href={`#${item.toLowerCase().replace(/\s/g, "")}`}
+                    className="hover:text-white transition-colors"
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
           <div>
             <h5 className="text-lg font-bold text-white mb-4">Support</h5>
             <ul className="space-y-3 text-gray-400">
-              {["Help Center", "FAQ", "Contact Us", "Status"].map((item) => (
+              {["Help Center", "FAQ", "Contact Us"].map((item) => (
                 <li key={item}>
-                  <a href="#" className="hover:text-white transition-colors">
+                  {/* For external links, use a real path like "/contact" */}
+                  <a
+                    href={`/${item.toLowerCase().replace(/\s/g, "-")}`}
+                    className="hover:text-white transition-colors"
+                  >
                     {item}
                   </a>
                 </li>
