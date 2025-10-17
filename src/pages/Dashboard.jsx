@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Sparkles,
   BarChart3,
   FileText,
   Briefcase,
@@ -9,46 +8,29 @@ import {
   Plus,
   TrendingUp,
   Calendar,
-  Target,
   Award,
   Settings,
   Bell,
   Search,
-  Filter,
-  Download,
   Edit,
   Trash2,
   Github,
   Linkedin,
-  Eye,
-  Share,
-  Star,
-  Clock,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
   ArrowUpRight,
   ArrowDownRight,
-  Users,
-  Mail,
-  Phone,
   MapPin,
-  ExternalLink,
   Zap,
   Brain,
   PenTool,
-  BookOpen,
   PieChart,
-  Activity,
   DollarSign,
   Globe,
   ChevronRight,
-  ChevronDown,
   MoreHorizontal,
-  Link as LinkIcon
 } from 'lucide-react';
 import { Link } from 'react-router-dom'
 import api from '../api/api'; // Make sure this path is correct for your API utility
+import Logo from '../components/Logo';
 
 
 const mockData = {
@@ -172,9 +154,20 @@ const ApplicationCard = ({ application }) => (
 );
 
 const ProfileCard = ({ profile, onDelete }) => {
-  // Destructure for easier access
-  const { profileName, updatedAt, details } = profile;
-  const { personalInfo, careerSummary, contactInfo } = details;
+  
+  const {
+    profileName,
+    updatedAt,
+    firstName,
+    lastName,
+    totalExperienceInYears,
+    experience,
+    projects,
+    skills,
+    github,
+    linkedin,
+    _id // The unique ID for the delete function
+  } = profile;
 
   const lastUpdated = new Date(updatedAt).toLocaleDateString("en-IN", {
     day: 'numeric', month: 'short', year: 'numeric'
@@ -193,8 +186,9 @@ const ProfileCard = ({ profile, onDelete }) => {
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-xl font-bold text-gray-900">{profileName}</h3>
+          {/* Use flattened fields */}
           <p className="text-sm text-gray-600 capitalize">
-            {`${personalInfo.firstName} ${personalInfo.lastName}`}
+            {`${firstName} ${lastName}`}
           </p>
         </div>
         <div className="text-right flex-shrink-0">
@@ -206,15 +200,17 @@ const ProfileCard = ({ profile, onDelete }) => {
       {/* --- Key Stats --- */}
       <div className="grid grid-cols-3 gap-4 text-center my-4 py-4 border-y border-gray-200">
         <div>
-          <p className="text-2xl font-bold text-blue-600">{careerSummary.totalExperienceInYears || 0}</p>
+          {/* Use flattened fields */}
+          <p className="text-2xl font-bold text-blue-600">{totalExperienceInYears || 0}</p>
           <p className="text-xs text-gray-600">Years Exp.</p>
         </div>
         <div>
-          <p className="text-2xl font-bold text-purple-600">{careerSummary.experience.length}</p>
+          {/* These arrays are still at the root, so this is correct */}
+          <p className="text-2xl font-bold text-purple-600">{experience.length}</p>
           <p className="text-xs text-gray-600">Roles</p>
         </div>
         <div>
-          <p className="text-2xl font-bold text-green-600">{careerSummary.projects.length}</p>
+          <p className="text-2xl font-bold text-green-600">{projects.length}</p>
           <p className="text-xs text-gray-600">Projects</p>
         </div>
       </div>
@@ -223,14 +219,15 @@ const ProfileCard = ({ profile, onDelete }) => {
       <div className="mb-6 flex-grow">
         <h4 className="text-sm font-semibold text-gray-700 mb-2">Top Skills</h4>
         <div className="flex flex-wrap gap-2">
-          {careerSummary.skills.slice(0, 4).map((skill, i) => (
+          {/* Use flattened skills array */}
+          {skills && skills.slice(0, 4).map((skill, i) => (
             <span key={i} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
               {skill}
             </span>
           ))}
-          {careerSummary.skills.length > 4 && (
+          {skills && skills.length > 4 && (
             <span className="px-2 py-1 bg-gray-200 text-gray-800 text-xs font-medium rounded-full">
-              +{careerSummary.skills.length - 4} more
+              +{skills.length - 4} more
             </span>
           )}
         </div>
@@ -239,18 +236,19 @@ const ProfileCard = ({ profile, onDelete }) => {
       {/* --- Actions & Socials --- */}
       <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-200">
         <div className="flex items-center gap-2">
-          {contactInfo.socials.github && (
-            <a href={contactInfo.socials.github} target="_blank" rel="noopener noreferrer" className="p-2 text-gray-500 hover:text-gray-900 transition-colors"><Github className="w-5 h-5" /></a>
+          {/* Use flattened social links */}
+          {github && (
+            <a href={github} target="_blank" rel="noopener noreferrer" className="p-2 text-gray-500 hover:text-gray-900 transition-colors"><Github className="w-5 h-5" /></a>
           )}
-          {contactInfo.socials.linkedin && (
-            <a href={contactInfo.socials.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 text-gray-500 hover:text-blue-600 transition-colors"><Linkedin className="w-5 h-5" /></a>
+          {linkedin && (
+            <a href={linkedin} target="_blank" rel="noopener noreferrer" className="p-2 text-gray-500 hover:text-blue-600 transition-colors"><Linkedin className="w-5 h-5" /></a>
           )}
         </div>
         <div className="flex items-center gap-2">
           <button className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors">
             <Edit className="w-5 h-5" />
           </button>
-          <button onClick={() => onDelete(profile._id)} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors">
+          <button onClick={() => onDelete(_id)} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors">
             <Trash2 className="w-5 h-5" />
           </button>
         </div>
@@ -314,9 +312,23 @@ const Dashboard = () => {
     }
   }, [activeTab]);
 
-  const handleDeleteProfile = (profileId) => {
-    console.log("Deleting profile:", profileId);
-    setProfiles(prevProfiles => prevProfiles.filter(p => p._id !== profileId));
+  const handleDeleteProfile = async (profileId) => {
+    console.log("Attempting to delete profile:", profileId);
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await api.delete(`/profiles/deleteprofile/${profileId}`);
+      setProfiles(prevProfiles => prevProfiles.filter(p => p._id !== profileId));
+      console.log("Profile deleted successfully:", profileId);
+      // Optionally, add a success notification here (e.g., toast)
+    } catch (err) {
+      console.error("Failed to delete profile:", err);
+      setError(err.response?.data?.message || err.message || "Could not delete profile.");
+      // Re-fetch profiles or show an error to the user
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -325,9 +337,9 @@ const Dashboard = () => {
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
+              <div className="w-10 h-10  rounded-xl flex items-center justify-center">
+                  <Logo/>
+                </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   ProskAI Dashboard

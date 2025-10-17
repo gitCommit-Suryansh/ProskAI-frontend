@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import { User, Mail, Lock, XCircle, CheckCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
 import api from "../api/api";
 import { setToken,setUser } from "../utils/auth";
-import { useNavigate } from 'react-router-dom'
-
+import { Link, useNavigate } from 'react-router-dom'
+import Logo from '../components/Logo';
 
 // Enhanced InputField component with modern styling
 const InputField = ({ icon: Icon, name, type, placeholder, value, onChange, showPassword, onTogglePassword }) => (
@@ -118,8 +118,8 @@ export default function Signup() {
           className="text-center mb-8"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <Sparkles className="w-7 h-7 text-white" />
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg">
+              <Logo/>
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               ProskAI
@@ -240,12 +240,12 @@ export default function Signup() {
           >
             <p className="text-gray-600">
               Already have an account?{" "}
-              <a
-                href="/signin"
+              <Link
+                to="/signin"
                 className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
               >
                 Sign in here
-              </a>
+              </Link>
             </p>
           </motion.div>
         </motion.div>

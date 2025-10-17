@@ -342,6 +342,9 @@ export default function Home() {
           className="flex items-center gap-2"
         >
           <Logo />
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hidden md:block">
+            ProskAI
+          </h1>
         </motion.div>
         <nav className="hidden md:flex space-x-8 text-gray-300 font-medium">
           {["Features", "How It Works", "Testimonials", "Pricing"].map(
@@ -739,13 +742,12 @@ export default function Home() {
               <motion.div
                 key={i}
                 // This conditional logic creates the bento grid structure
-                className={`p-8 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl ${
-                  i === 0 || i === 3
+                className={`p-8 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl ${i === 0 || i === 3
                     ? "md:col-span-4"
                     : i === 1 || i === 2
-                    ? "md:col-span-2"
-                    : "md:col-span-3"
-                }`}
+                      ? "md:col-span-2"
+                      : "md:col-span-3"
+                  }`}
                 initial={{ opacity: 0, y: 50, rotateY: 15 }}
                 whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
                 viewport={{ once: true, amount: 0.4 }}
@@ -815,11 +817,10 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.7, delay: i * 0.2 }}
-              className={`p-8 rounded-3xl border transition-all duration-300 h-full flex flex-col ${
-                plan.isFeatured
+              className={`p-8 rounded-3xl border transition-all duration-300 h-full flex flex-col ${plan.isFeatured
                   ? "bg-white/10 backdrop-blur-xl border-purple-500 shadow-2xl shadow-purple-500/10"
                   : "bg-white/5 backdrop-blur-md border-white/10"
-              }`}
+                }`}
             >
               {plan.isFeatured && (
                 <div className="text-center mb-4">
@@ -851,11 +852,10 @@ export default function Home() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`w-full py-4 rounded-full font-bold text-lg mt-auto transition-all duration-300 ${
-                  plan.isFeatured
+                className={`w-full py-4 rounded-full font-bold text-lg mt-auto transition-all duration-300 ${plan.isFeatured
                     ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
                     : "bg-white/10 text-white hover:bg-white/20"
-                }`}
+                  }`}
               >
                 {plan.cta}
               </motion.button>

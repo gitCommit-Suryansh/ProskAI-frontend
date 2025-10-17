@@ -13,9 +13,9 @@ const Logo = ({ className }) => {
         className="w-10 h-10" 
       />
       
-      <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hidden md:block">
+      {/* <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hidden md:block">
         ProskAI
-      </h1>
+      </h1> */}
     </Link>
   );
 };
